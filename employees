@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Antrix Corporation Limited</title>
+  <style>
+    body, html { margin: 0; padding: 0; height: 100%; font-family: Arial, sans-serif; }
+    #page1 { height: 100vh; background: url('https://www.antrix.co.in/sites/default/files/banner1-new.jpg') center/cover no-repeat;
+             display: flex; flex-direction: column; justify-content: center; align-items: center;
+             color: white; text-shadow: 0 0 2px black; }
+    marquee { font-size: 2em; font-weight: bold; margin-top: 30px;
+             width: 100%; background: rgba(0,0,0,0.4); padding: 10px 0; }
+    #employeeDetailsBtn { padding: 15px 30px; font-size: 1.2em; cursor: pointer;
+                          border: none; border-radius: 6px; background-color: #4c5baf;
+                          color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+    #page2 { max-width: 1000px; margin: 30px auto; padding: 20px; display: none;
+             box-shadow: 0 0 10px black; }
+    h1 { margin-bottom: 10px; }
+    .search-box { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+    .search-box input, .search-box select, .search-box button {
+      padding: 8px; font-size: 14px; flex: 1; min-width: 150px;
+    }
+    table { width: 100%; border-collapse: collapse; text-align: center; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 12px; }
+    th { background-color: #4c5baf; color: #fff; }
+    tbody tr:nth-child(even) { background-color: #f9f9f9; }
+    #employee-table { display: none; }
+    img { border-radius: 50%; }
+    button.delete-btn { background: none; border: none; color: red; cursor: pointer;
+                        font-weight: bold; font-size: 1em; }
+    #addForm { display: none; margin-bottom: 20px; border: 1px solid #4c5baf;
+               padding: 15px; border-radius: 6px; background-color: #f1f1f1; }
+    #addForm input, #addForm select { padding: 8px; margin: 5px 10px 10px 0;
+                                      width: calc(33% - 12px); }
+    #addForm button { padding: 8px 16px; margin-right: 10px; cursor: pointer; }
+    #add-btn { max-width: 80px; background-color: #28a745; color: white; }
+    .deleted-row { background-color: yellow !important; }
+    .new-row { background-color: palevioletred !important; }
+  </style>
+</head>
+<body>
+
+  <div id="page1">
+    <marquee behavior="scroll" direction="left">Antrix Corporation Limited</marquee>
+    <button id="employeeDetailsBtn">Employee Details</button>
+  </div>
+   
+  <div id="page2">
+    <h1>Employee Details</h1>
+
+    <div style="margin-bottom: 15px;">
+      <button id="view-all-btn" style="padding:8px 12px;">View All</button>
+      <button id="view-new-btn" style="padding:8px 12px; background-color: palevioletred;">View New</button>
+      <button id="view-deleted-btn" style="padding:8px 12px; background-color: yellow;">View Deleted</button>
+    </div>
+
+    <div class="search-box">
+      <input type="text" id="search-id" placeholder="Search by ID" />
+      <input type="text" id="search-name" placeholder="Search by Name" />
+      <input type="text" id="search-email" placeholder="Search by Email" />
+      <input type="text" id="search-contact" placeholder="Search by Contact" />
+      <select id="search-age">
+        <option value="all">All Ages</option>
+        <option value="below-30">Below 30</option>
+        <option value="above-30">30 and Above</option>
+      </select>
+      <select id="search-salary">
+        <option value="all">All Salaries</option>
+        <option value="below-50k">Below 50K</option>
+        <option value="above-50k">50K and Above</option>
+      </select>
+      <select id="search-branch">
+        <option value="all">All Branches</option>
+        <option value="HR">HR</option>
+        <option value="IT">IT</option>
+        <option value="Sales">Sales</option>
+        <option value="Finance">Finance</option>
+        <option value="Admin">Admin</option>
+      </select>
+      <button id="submit-btn" type="button">Submit</button>
+      <button id="add-btn" type="button">+</button>
+      <button id="export-btn" type="button">Export to Excel</button>
+      <button id="upload-btn" type="button">Upload from Excel</button>
+      <input type="file" id="upload-excel" accept=".xlsx,.xls" style="display:none" />
+    </div>
+     <!-- PDF View Box -->
+    <div style="position: fixed; bottom: 20px; right: 20px; width: 120px; height: 120px;
+            border: 2px solid #4c5baf; border-radius: 10px; display: flex; align-items: center;
+            justify-content: center; background-color: white; cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.2);"
+     onclick="window.open('C:\Users\Technical\Documents\HFW378MSF2024_21122024.pdf', '_blank')">
+  <span style="text-align: center; font-size: 0.9em; color: #4c5baf;"><strong>Antrix<br>Employee<br>PDF</strong></span>
+    </div>
+
+    <form id="addForm">
+      <input type="number" id="new-id" placeholder="ID (unique)" required />
+      <input type="text" id="new-name" placeholder="Name" required />
+      <input type="number" id="new-age" placeholder="Age" required min="18" />
+      <input type="number" id="new-salary" placeholder="Salary" required min="0" />
+      <select id="new-branch" required>
+        <option value="">Select Branch</option>
+        <option value="HR">HR</option>
+        <option value="IT">IT</option>
+        <option value="Sales">Sales</option>
+        <option value="Finance">Finance</option>
+        <option value="Admin">Admin</option>
+      </select>
+      <input type="email" id="new-email" placeholder="Email" required />
+      <input type="text" id="new-contact" placeholder="Contact" required />
+      <input type="url" id="new-photo" placeholder="Photo URL" required />
+      <br/>
+      <button type="button" id="save-btn">Save</button>
+      <button type="button" id="cancel-btn">Cancel</button>
+    </form>
+
+    <table id="employee-table">
+      <thead>
+        <tr>
+          <th>Photo</th><th>ID</th><th>Name</th><th>Age</th><th>Salary</th>
+          <th>Branch</th><th>Email</th><th>Contact</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const sampleEmployees = [
+        {id:1,name:"John Doe",age:25,salary:48000,branch:"IT",email:"john.doe@example.com",contact:"1234567890",photo:"https://randomuser.me/api/portraits/men/1.jpg"},
+        {id:2,name:"Jane Smith",age:32,salary:55000,branch:"HR",email:"jane.smith@example.com",contact:"2345678901",photo:"https://randomuser.me/api/portraits/women/2.jpg"},
+        {id:3,name:"Michael Brown",age:28,salary:47000,branch:"Sales",email:"michael.brown@example.com",contact:"3456789012",photo:"https://randomuser.me/api/portraits/men/3.jpg"},
+        {id:4,name:"Emily Johnson",age:40,salary:62000,branch:"Finance",email:"emily.johnson@example.com",contact:"4567890123",photo:"https://randomuser.me/api/portraits/women/4.jpg"},
+        {id:5,name:"David Wilson",age:29,salary:50000,branch:"Admin",email:"david.wilson@example.com",contact:"5678901234",photo:"https://randomuser.me/api/portraits/men/5.jpg"},
+        {id:6,name:"Laura Martinez",age:35,salary:58000,branch:"IT",email:"laura.martinez@example.com",contact:"6789012345",photo:"https://randomuser.me/api/portraits/women/6.jpg"},
+        {id:7,name:"James Taylor",age:27,salary:46000,branch:"Sales",email:"james.taylor@example.com",contact:"7890123456",photo:"https://randomuser.me/api/portraits/men/7.jpg"},
+        {id:8,name:"Sophia Anderson",age:33,salary:54000,branch:"HR",email:"sophia.anderson@example.com",contact:"8901234567",photo:"https://randomuser.me/api/portraits/women/8.jpg"},
+        {id:9,name:"Robert Thomas",age:38,salary:61000,branch:"Finance",email:"robert.thomas@example.com",contact:"9012345678",photo:"https://randomuser.me/api/portraits/men/9.jpg"},
+        {id:10,name:"Isabella Jackson",age:24,salary:45000,branch:"Admin",email:"isabella.jackson@example.com",contact:"0123456789",photo:"https://randomuser.me/api/portraits/women/10.jpg"},
+        // ... add additional entries if desired
+      ];
+      let employees = [...sampleEmployees];
+      let deletedEmployeeIds = new Set();
+      let newEmployeeIds = new Set();
+      let filteredEmployees = [...employees];
+
+      // Cached elements
+      const page1 = document.getElementById("page1");
+      const page2 = document.getElementById("page2");
+      const btnDetails = document.getElementById("employeeDetailsBtn");
+      const tbody = document.querySelector("#employee-table tbody");
+      const viewAllBtn = document.getElementById("view-all-btn");
+      const viewNewBtn = document.getElementById("view-new-btn");
+      const viewDeletedBtn = document.getElementById("view-deleted-btn");
+      const submitBtn = document.getElementById("submit-btn");
+      const addBtn = document.getElementById("add-btn");
+      const addForm = document.getElementById("addForm");
+      const saveBtn = document.getElementById("save-btn");
+      const cancelBtn = document.getElementById("cancel-btn");
+      const exportBtn = document.getElementById("export-btn");
+      const uploadBtn = document.getElementById("upload-btn");
+      const uploadInput = document.getElementById("upload-excel");
+
+      btnDetails.addEventListener("click", () => {
+        page1.style.display = "none";
+        page2.style.display = "block";
+        renderTable(employees);
+      });
+
+      function renderTable(data) {
+        tbody.innerHTML = data.length
+          ? data.map(emp => {
+              const cls = deletedEmployeeIds.has(emp.id)
+                ? "deleted-row"
+                : (newEmployeeIds.has(emp.id) ? "new-row" : "");
+              return `
+                <tr class="${cls}">
+                  <td><img src="${emp.photo}" width="40" height="40"/></td>
+                  <td>${emp.id}</td><td>${emp.name}</td>
+                  <td>${emp.age}</td><td>${emp.salary}</td>
+                  <td>${emp.branch}</td><td>${emp.email}</td>
+                  <td>${emp.contact}</td>
+                  <td><button class="delete-btn" data-id="${emp.id}">Delete</button></td>
+                </tr>`;
+            }).join("")
+          : "<tr><td colspan='9'>No data found</td></tr>";
+        document.getElementById("employee-table").style.display = "table";
+      }
+
+      function filterData() {
+        const idVal = document.getElementById("search-id").value.trim().toLowerCase();
+        const nameVal = document.getElementById("search-name").value.trim().toLowerCase();
+        const emailVal = document.getElementById("search-email").value.trim().toLowerCase();
+        const contactVal = document.getElementById("search-contact").value.trim().toLowerCase();
+        const ageVal = document.getElementById("search-age").value;
+        const salaryVal = document.getElementById("search-salary").value;
+        const branchVal = document.getElementById("search-branch").value;
+
+        filteredEmployees = employees.filter(emp => {
+          return (idVal === "" || emp.id.toString().includes(idVal)) &&
+                 (nameVal === "" || emp.name.toLowerCase().includes(nameVal)) &&
+                 (emailVal === "" || emp.email.toLowerCase().includes(emailVal)) &&
+                 (contactVal === "" || emp.contact.includes(contactVal)) &&
+                 ((ageVal === "all") ||
+                  (ageVal === "below-30" && emp.age < 30) ||
+                  (ageVal === "above-30" && emp.age >= 30)) && 
+                 ((salaryVal === "all") ||
+                  (salaryVal === "below-50k" && emp.salary < 50000) ||
+                  (salaryVal === "above-50k" && emp.salary >= 50000)) &&
+                 (branchVal === "all" || emp.branch === branchVal);
+        });
+      }
+
+      submitBtn.addEventListener("click", () => {
+        filterData();
+        renderTable(filteredEmployees);
+      });
+
+      tbody.addEventListener("click", e => {
+        if (e.target.classList.contains("delete-btn")) {
+          const id = +e.target.dataset.id;
+          deletedEmployeeIds.add(id);
+          newEmployeeIds.delete(id);
+          filterData();
+          renderTable(filteredEmployees);
+        }
+      });
+
+      addBtn.addEventListener("click", () => addForm.style.display = "block");
+      cancelBtn.addEventListener("click", () => {
+        addForm.reset();
+        addForm.style.display = "none";
+      });
+
+      saveBtn.addEventListener("click", () => {
+        const id = +document.getElementById("new-id").value;
+        const name = document.getElementById("new-name").value.trim();
+        const age = +document.getElementById("new-age").value;
+        const salary = +document.getElementById("new-salary").value;
+        const branch = document.getElementById("new-branch").value;
+        const email = document.getElementById("new-email").value.trim();
+        const contact = document.getElementById("new-contact").value.trim();
+        const photo = document.getElementById("new-photo").value.trim();
+        if (employees.some(emp => emp.id === id)) { alert("ID must be unique."); return; }
+        if (!id || !name || !age || !salary || !branch || !email || !contact || !photo) {
+          alert("Please fill all fields."); return;
+        }
+        newEmployeeIds.add(id);
+        deletedEmployeeIds.delete(id);
+        employees.push({id,name,age,salary,branch,email,contact,photo});
+        addForm.reset();
+        addForm.style.display = "none";
+        filterData();
+        renderTable(filteredEmployees);
+      });
+
+      exportBtn.addEventListener("click", () => {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(
+          [["ID","Name","Age","Salary","Branch","Email","Contact","Photo URL"],
+           ...employees.map(e => [e.id,e.name,e.age,e.salary,e.branch,e.email,e.contact,e.photo])]
+        );
+        XLSX.utils.book_append_sheet(wb, ws, "Employees");
+        XLSX.writeFile(wb, "employees.xlsx");
+      });
+
+      uploadBtn.addEventListener("click", () => uploadInput.click());
+
+      uploadInput.addEventListener("change", e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = evt => {
+          const wb = XLSX.read(new Uint8Array(evt.target.result), {type:"array"});
+          const js = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:""});
+          const old = new Map(employees.map(e => [e.id,e]));
+          const newArr = js.map(r => ({
+            id:+r.ID, name:r.Name, age:+r.Age, salary:+r.Salary,
+            branch:r.Branch, email:r.Email, contact:r.Contact,
+            photo:r["Photo URL"]||"https://via.placeholder.com/40"
+          })).filter(r => r.id > 0);
+          deletedEmployeeIds.clear();
+          newEmployeeIds.clear();
+          for (let [id,emp] of old.entries()) {
+            if (!newArr.find(r => r.id === id)) deletedEmployeeIds.add(id);
+          }
+          for (let r of newArr) {
+            if (!old.has(r.id)) newEmployeeIds.add(r.id);
+          }
+          employees = [...newArr, ...Array.from(deletedEmployeeIds).map(id => old.get(id))];
+          filterData();
+          renderTable(filteredEmployees);
+          uploadInput.value = "";
+          alert("Employee list updated!");
+        };
+        reader.readAsArrayBuffer(file);
+      });
+
+      viewAllBtn.addEventListener("click", () => {
+        filterData();
+        renderTable(filteredEmployees);
+      });
+      viewNewBtn.addEventListener("click", () => {
+        renderTable(employees.filter(e => newEmployeeIds.has(e.id)));
+      });
+      viewDeletedBtn.addEventListener("click", () => {
+        renderTable(employees.filter(e => deletedEmployeeIds.has(e.id)));
+      });
+    });
+  </script>
+</body>
+</html>
